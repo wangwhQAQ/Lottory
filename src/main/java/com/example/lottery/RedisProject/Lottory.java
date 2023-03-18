@@ -62,7 +62,7 @@ public class Lottory {
         jedis.sadd("setPrizes", setPrizes);
     }
 
-    public void initZsetPrize(){
+    private void initZsetPrize(){
         prizesMap = new HashMap<>();
         prizesMap1 = new HashMap<>();
         for (int i = 0; i < FIRST_PRIZE_COUNT; i++) {
@@ -83,7 +83,7 @@ public class Lottory {
         prizesMap1.put(4,200);
     }
 
-    public String[] initSetPrize(){
+    private String[] initSetPrize(){
         Set<String> prizes = new HashSet<>();
         for (int i = 0; i < FIRST_PRIZE_COUNT; i++) {
             prizes.add("FRI_PRIZE_" + i);
@@ -99,6 +99,18 @@ public class Lottory {
         }
 
         return prizes.toArray(new String[prizes.size()]);
+    }
+
+    public void initPrizePool(){
+        jedis = new Jedis(HOST, PORT);
+        jedis.select(2);
+
+        Lottory lottory = new Lottory();
+        lottory.initZsetPrize();
+
+        //使用set存放奖品
+        String[] setPrizes = lottory.initSetPrize();
+        jedis.sadd("setPrizes", setPrizes);
     }
 
 
