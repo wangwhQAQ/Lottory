@@ -4,6 +4,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,8 +58,8 @@ public class Lottory {
         }
 
 
-        String[] setPrizes = new String[PRIZE_COUNT+FIRST_PRIZE_COUNT+SECOND_PRIZE_COUNT+THIRD_PRIZE_COUNT];
-
+        String[] setPrizes = lottory.initSetPrize();
+        jedis.sadd("setPrizes", setPrizes);
     }
 
     public void initZsetPrize(){
@@ -80,6 +81,24 @@ public class Lottory {
         prizesMap1.put(2,20);
         prizesMap1.put(3,50);
         prizesMap1.put(4,200);
+    }
+
+    public String[] initSetPrize(){
+        Set<String> prizes = new HashSet<>();
+        for (int i = 0; i < FIRST_PRIZE_COUNT; i++) {
+            prizes.add("FRI_PRIZE_" + i);
+        }
+        for (int i = 0; i < SECOND_PRIZE_COUNT; i++) {
+            prizes.add("SEC_PRIZE" + i );
+        }
+        for (int i = 0; i < THIRD_PRIZE_COUNT; i++) {
+            prizes.add("THR_PRIZE" + i );
+        }
+        for (int i = 0; i < PRIZE_COUNT; i++) {
+            prizes.add("THANKS_PRIZE" + i);
+        }
+
+        return prizes.toArray(new String[prizes.size()]);
     }
 
 
